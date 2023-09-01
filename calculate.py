@@ -1,5 +1,4 @@
 import math
-import json
 
 def calculate_moon_phase(Y: int,M: int,D: int) -> float:
     C = E = JD = B = A = F = 0
@@ -28,11 +27,14 @@ Data = []
 
 MoonMonthStart -= 1
 
+DiffYears = [2023,2026,2029,2032]
+
 for Y in range(Year, Year + HowManyYears):
-    if Y != 2026:
-        Done = True
-    else:
+    try:
+        DiffYears.index(Y)
         Done = False
+    except ValueError:
+        Done = True
     if Y % 4 == 0:
         LeapYear = True
         if Y % 100 == 0:
@@ -53,8 +55,8 @@ for Y in range(Year, Year + HowManyYears):
                     MoonMonthStart += 1
                 else:
                     Done = True
-                Data.append({'Year':Y,'Month':M,'Day':D,'MoonMonth':MoonMonthStart,'MoonYear':MoonYearStart,'MoonDay':Day})
+                Data.append({'Year':Y,'Month':M,'Day':D,'MoonYear':MoonYearStart,'MoonMonth':MoonMonthStart})
             if MoonMonthStart == 12:
                 MoonMonthStart = 0
                 MoonYearStart += 1
-print(json.dumps(Data, indent=4))
+print(Data)
