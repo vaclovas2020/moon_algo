@@ -18,4 +18,4 @@ Y = int(input('Y'))
 M = int(input('M'))
 D = int(input('D'))
 
-print(math.ceil(calculate_moon_phase(Y,M,D)))
+print('Days since New Moon:' + math.ceil(calculate_moon_phase(Y,M,D)))
