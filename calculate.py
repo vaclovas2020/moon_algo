@@ -51,11 +51,8 @@ for Y in range(Year, Year + HowManyYears):
 
     for M in range(1, 13):
         for D in range(1, Days[M - 1] + 1):
-            Day = calculate_moon_phase(Y, M, D)
-            DayBefore = calculate_moon_phase(Y, M, D - 1)
-            DayAfter = calculate_moon_phase(Y, M, D + 1)
-            DayDayAfter = calculate_moon_phase(Y, M, D + 2)
-            if math.ceil(Day) == 1:
+            Day = math.ceil(calculate_moon_phase(Y, M, D))
+            if Day == 1:
                 if Done or MoonMonthStart != 2:
                     MoonMonthStart += 1
                 else:
@@ -68,16 +65,36 @@ for Y in range(Year, Year + HowManyYears):
                         "MoonYear": MoonYearStart,
                         "MoonMonth": MoonMonthStart,
                         "MoonDay": Day,
-                        "MoonDayBefore": DayBefore,
-                        "MoonDayAfter": DayAfter,
-                        "DayDayAfter": DayDayAfter,
+                        "DaysDiff": Days[M - 1] - D + 1,
                     }
                 )
             if MoonMonthStart == 12:
                 MoonMonthStart = 0
                 MoonYearStart += 1
 
+
+def DateMinusOneDay(Year: int, Month: int, Day: int) -> tuple:
+    if Day == 1:
+        if Month == 1:
+            Year -= 1
+            Month = 12
+        else:
+            Month -= 1
+        Day = Days[Month - 1]
+    else:
+        Day -= 1
+    return (Year, Month, Day)
+
+
 for i in range(len(Data)):
+    if i + 1 < len(Data):
+        (NextYear, NextMonth, NextDay) = DateMinusOneDay(
+            Data[i + 1]["Year"], Data[i + 1]["Month"], Data[i + 1]["Day"]
+        )
+    else:
+        (NextYear, NextMonth, NextDay) = DateMinusOneDay(
+            Data[i]["Year"], Data[i]["Month"], Days[Data[i]["Month"] - 1] + 1
+        )
     print(
-        f"Sun:{Data[i]['Year']}-{Data[i]['Month']}-{Data[i]['Day']} HC:{Data[i]['MoonYear']}-{Data[i]['MoonMonth']} Day:{Data[i]['MoonDay']} DayBefore:{Data[i]['MoonDayBefore']} DayAfter:{Data[i]['MoonDayAfter']} DayDayAfter:{Data[i]['DayDayAfter']}"
+        f"new HeavenlyCalendarMonth(new GregorianCalendar({Data[i]['Year']}, {Data[i]['Month'] - 1}, {Data[i]['Day']}), new GregorianCalendar({NextYear}, {NextMonth - 1}, {NextDay}), {Data[i]['MoonYear']}, {Data[i]['MoonMonth']}, {Data[i]['DaysDiff']}),"
     )
